@@ -13,19 +13,13 @@ pipeline {
     stages {
         stage('Audit tools') {
             steps {
-                sh '''
-                    git version 
-                    docker version
-                    dotnet --list-sdks
-                    dotnet --list-runtimes
-                    ls -al
-                '''
+                auditTools()
             }
         }
 
         stage('Build') {
             environment {
-                VERSION_SUFFIX = "${sh(script:'if [ "${RC}" == "false" ] ; then echo -n "${VERSION_RC}+ci.${BUILD_NUMBER}"; else echo -n "${VERSION_RC}"; fi', returnStdout: true)}"
+                VERSION_SUFFIX = getVersionSuffix()
             }
             steps {
                 echo "Building version ${VERSION} with suffix: ${VERSION_SUFFIX}"
@@ -61,4 +55,22 @@ pipeline {
             }
         }
     }
+}
+
+String getVersionSuffix() {
+    if (params.RC) {
+        return env.VERSION_RC
+    } else {
+        return env.VERSION_RC + 'ci' + env.BUILD_NUMBER
+    }
+}
+
+void auditTools() {
+    sh '''
+        git version 
+        docker version
+        dotnet --list-sdks
+        dotnet --list-runtimes
+        ls -al
+    '''
 }
