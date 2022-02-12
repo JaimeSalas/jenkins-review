@@ -7,12 +7,26 @@ pipeline {
 
     stages {
         stage('Build') {
-            agent any
             environment {
                 LOG_LEVEL='INFO'
             }
-            steps {
-                echo "Building release ${RELEASE} with log level ${LOG_LEVEL}..."
+
+            parallel {
+                stage('linux-arm64') {
+                    steps {
+                        echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
+                    }
+                }
+                stage('linux-amd64') {
+                    steps {
+                        echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
+                    }
+                }
+                stage('windows-amd64') {
+                    steps {
+                        echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
+                    }
+                }
             }
         }
 
