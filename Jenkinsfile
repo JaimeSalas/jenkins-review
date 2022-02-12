@@ -1,58 +1,45 @@
 pipeline {
     agent any 
-
     environment {
-        RELEASE='0.0.1'
+        VERSION = "0.1.0"
+        VERSION_RC = "rc.2"
     }
 
     stages {
+        stage('Audit tools') {
+            steps {
+                sh '''
+                    git version 
+                    docker version
+                    dotnet --list-sdks
+                    dotnet --list-runtimes
+                    ls -al
+                '''
+            }
+        }
+
         stage('Build') {
-            environment {
-                LOG_LEVEL='INFO'
-            }
-
-            parallel {
-                stage('linux-arm64') {
-                    steps {
-                        echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
-                    }
-                }
-                stage('linux-amd64') {
-                    steps {
-                        echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
-                    }
-                }
-                stage('windows-amd64') {
-                    steps {
-                        echo "Building release ${RELEASE} for ${STAGE_NAME} with log level ${LOG_LEVEL}..."
-                    }
-                }
-            }
-        }
-
-        stage('Test') {
             steps {
-                echo "Testing release ${RELEASE}..."
+                echo "Building version ${VERSION} with suffix: ${VERSION_RC}"
+                sh 'dotnet build -p:VersionPrefix="${VERSION}" --version-suffix "${VERSION_RC}" ./src/Pi.Web/Pi.Web.csproj'
             }
         }
 
-        stage('Deploy') {
-            input {
-                message 'Deploy?'
-                ok 'Do it!'
-                parameters {
-                    string(name: 'TARGET_ENVIRONMENT', defaultValue: 'PROD', description: 'Target deployment environment')
+        stage('Unit Test') {
+            steps {
+                dir('./src') {
+                    sh '''
+                        dotnet test --logger "trx;LogFileName=Pi.Math.trx" Pi.Math.Tests/Pi.Math.Tests.csproj
+                        dotnet test --logger "trx;LogFileName=Pi.Runtime.trx" Pi.Runtime.Tests/Pi.Runtime.Tests.csproj
+                    '''
                 }
             }
-            steps {
-                echo "Deploying release ${RELEASE} to environment ${TARGET_ENVIRONMENT}"
-            }
         }
-    }
 
-    post {
-        always {
-            echo 'Prints wether deploy happened or not, success or failure'
+        stage('Smoke Test') {
+            steps {
+                sh 'dotnet ./src/Pi.Web/bin/Debug/netcoreapp3.1/Pi.Web.dll'
+            }
         }
     }
 }
