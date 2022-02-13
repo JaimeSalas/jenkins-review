@@ -5,10 +5,12 @@ pipeline {
 
     stages {
         stage('pre build') {
-            sh '''
-                ls -al 
-                echo $WORKSPACE
-            '''
+            steps {
+                sh '''
+                    ls -al 
+                    echo $WORKSPACE
+                '''
+            }
         }
         // stage('build e2e runner') {
         //     steps {
