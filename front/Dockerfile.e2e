@@ -1,0 +1,14 @@
+# This image will be the context image to run tests
+# docker pull cypress/base:16.13.2
+
+FROM cypress/base:16.13.2 
+
+WORKDIR /opt/app
+
+COPY . .
+
+RUN npm ci 
+
+RUN $(npm bin)/cypress verify 
+
+

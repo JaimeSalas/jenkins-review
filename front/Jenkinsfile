@@ -1,0 +1,24 @@
+def image
+
+pipeline {
+    agent any 
+
+    stages {
+        stage('pre build') {
+            sh '''
+                ls -al 
+                echo $WORKSPACE
+            '''
+        }
+        // stage('build e2e runner') {
+        //     steps {
+        //         script {
+        //             image = docker.build(
+        //                 "jaimesalas/e2e",
+        //                 "--pull -f $WORKSPACE/front/Dockerfile.e2e $WORKSPACE/front"
+        //             )
+        //         }
+        //     }
+        // }
+    }
+}
