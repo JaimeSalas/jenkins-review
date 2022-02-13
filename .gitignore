@@ -43,3 +43,4 @@ dist/
 front/cypress/integration/1-getting-started/
 front/cypress/integration/2-advanced-examples/
 videos/
+.env
