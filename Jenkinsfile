@@ -29,7 +29,7 @@ pipeline {
         stage('Build back') {
             steps {
                 script {
-                    image = docker.build(
+                    back = docker.build(
                         "jaimesalas/e2e-back",
                         "--pull -f $WORKSPACE/back/Dockerfile $WORKSPACE/back"
                     )
