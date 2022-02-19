@@ -20,7 +20,7 @@ pipeline {
                 script {
                     front = docker.build(
                         "jaimesalas/e2e",
-                        "--pull -f $WORKSPACE/front/Dockerfile.e2e $WORKSPACE/front"
+                        "--pull -f $WORKSPACE/e2e/front/Dockerfile.e2e $WORKSPACE/e2e/front"
                     )
                 }
             }
@@ -31,7 +31,7 @@ pipeline {
                 script {
                     back = docker.build(
                         "jaimesalas/e2e-back",
-                        "--pull -f $WORKSPACE/back/Dockerfile $WORKSPACE/back"
+                        "--pull -f $WORKSPACE/e2e/back/Dockerfile $WORKSPACE/e2e/back"
                     )
                 }
             }
