@@ -6,13 +6,18 @@ pipeline {
                 sh '''
                     docker -v 
                     docker-compose -v
+                    node -v
                     ls -l
                 '''
             }
         }
 
         stage('unit tests') {
-            agent any
+            // agent {
+            //     dockerfile {
+            //         dir 'integration-test/hangman-back'
+            //     }
+            // }
             steps {
                 echo 'run unit tests using Docker container base image'
             }
