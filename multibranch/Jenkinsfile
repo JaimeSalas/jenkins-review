@@ -34,6 +34,9 @@ pipeline {
     }
 
     stage('Build image & push it to DockerHub') {
+        when {
+            branch 'develop'
+        }
         steps {
             dir('multibranch') {
                 script {
@@ -42,6 +45,34 @@ pipeline {
                         dockerImage.push()
                         sh 'docker rmi $imageName'
                     }
+                }
+            }
+        }
+    }
+
+    stage('Deploy to server') {
+        when {
+            branch 'develop'
+        }
+
+        environment {
+            containerName = 'my-api-app'
+            ec2Instance = 'ec2-35-180-4-216.eu-west-3.compute.amazonaws.com'
+            appPort = 80
+        }
+
+        steps {
+            withCredentials([
+                credentialsId: 'ec2-ssh-credentials',
+                keyFileVariable: 'identityFile',
+                passphraseVariable: 'passphrase',
+                usernameVariable: 'user'
+            ]){
+                script {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no -i $identityFile $user@$ec2Instance \
+                        APP_PORT=$appPort CONTAINER_NAME=$containerName IMAGE_NAME=$imageName bash < ./scripts/deploy.sh
+                    '''
                 }
             }
         }
