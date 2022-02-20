@@ -6,6 +6,7 @@ pipeline {
                 sh '''
                     docker -v 
                     docker-compose -v
+                    ls -l
                 '''
             }
         }
