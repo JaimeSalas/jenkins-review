@@ -36,7 +36,7 @@ describe('game.dal', () => {
       const { player_id, word_id, game_state } = game;
 
       // Assert
-      expect(player_id).toEqual(1);
+      expect(player_id).toEqual(2);
       expect(word_id).toEqual(1);
       expect(game_state).toEqual('not_started');
     });
