@@ -9,7 +9,9 @@ pipeline {
         }
       }
       steps {
-        sh 'npm ci'
+        dir('multibranch') {
+            sh 'npm ci'
+        }
       }
     }
     stage('Build') {
@@ -20,7 +22,9 @@ pipeline {
         }
       }
       steps {
-        sh 'npm run build'
+        dir('multibranch') {
+            sh 'npm run build'
+        }
       }
     }
     stage('Tests') {
@@ -31,7 +35,9 @@ pipeline {
         }
       }
       steps {
-        sh 'npm test'
+        dir('multibranch') {
+            sh 'npm test'
+        }
       }
     }
   }
