@@ -1,0 +1,29 @@
+pipeline {
+    agent any 
+    stages {
+        stage('audit tools') {
+            sh '''
+                docker -v 
+                docker-compose -v
+            '''
+        }
+
+        stage('unit tests') {
+            agent any
+            steps {
+                echo 'run unit tests using Docker container base image'
+            }
+        }
+
+        stage('integration test') {
+            steps {
+                echo 'run integration tests with Docker Compose'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'clean resources'
+        }
+    }
+}
