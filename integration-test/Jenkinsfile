@@ -2,10 +2,12 @@ pipeline {
     agent any 
     stages {
         stage('audit tools') {
-            sh '''
-                docker -v 
-                docker-compose -v
-            '''
+            steps {
+                sh '''
+                    docker -v 
+                    docker-compose -v
+                '''
+            }
         }
 
         stage('unit tests') {
