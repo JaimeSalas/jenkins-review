@@ -13,13 +13,9 @@ pipeline {
         }
 
         stage('unit tests') {
-            // agent {
-            //     dockerfile {
-            //         dir 'integration-test/hangman-back'
-            //     }
-            // }
             steps {
-                echo 'run unit tests using Docker container base image'
+                sh 'npm install'
+                sh 'npm test'
             }
         }
 
